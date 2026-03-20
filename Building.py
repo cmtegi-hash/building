@@ -39,26 +39,31 @@ st_total_landings_area = sum(s["Area"] for s in st.session_state.stairs)
 grand_total = f1_total + rep_total_area + st_total_area
 
 # ======================================================
-# HEADER (HTML + CSS compatible iOS)
+# HEADER (COMPACT 2 LINES)
 # ======================================================
 header_html = f"""
 <div style="
-    background-color:#1e1e1e; color:#28a745;
-    padding:20px; border-radius:10px; border:1px solid #28a745;
-    text-align:center; margin-bottom:25px;
+    background-color:#1e1e1e;
+    color:#28a745;
+    padding:10px 15px;
+    border-radius:8px;
+    border:1px solid #28a745;
+    text-align:center;
+    margin-bottom:15px;
     font-family:sans-serif;
+    line-height:1.4;
 ">
-    <div style="color:white; font-size:18px; margin-bottom:5px;">
+    <div style="color:white; font-size:16px; margin-bottom:4px;">
         {st.session_state.building_name} | {st.session_state.address}
     </div>
-    <div style="display:flex; justify-content:center; gap:20px; flex-wrap:wrap;">
-        <div style="font-size:22px; font-weight:bold;">Total Area: {int(grand_total):,} Sq Ft</div>
-        <div style="font-size:22px; font-weight:bold;">Total Landings Area: {int(st_total_landings_area):,} Sq Ft</div>
-        <div style="font-size:22px; font-weight:bold;">Total Steps: {int(st_total_steps)}</div>
+    <div style="font-size:15px; font-weight:500;">
+        Area: {int(grand_total):,} Sq Ft | 
+        Landings: {int(st_total_landings_area):,} Sq Ft | 
+        Steps: {int(st_total_steps)}
     </div>
 </div>
 """
-components.html(header_html, height=140)
+components.html(header_html, height=90)
 
 # ======================================================
 # BUILDING SETUP
@@ -69,7 +74,6 @@ c_n, c_a, c_f = st.columns([2, 2, 1])
 st.session_state.building_name = c_n.text_input("Building Name", st.session_state.building_name)
 st.session_state.address = c_a.text_input("Address", st.session_state.address)
 
-# Total Floors vacío por defecto
 tf_input = c_f.text_input("Total Floors", "" if st.session_state.total_floors is None else str(st.session_state.total_floors))
 if tf_input.isdigit():
     st.session_state.total_floors = int(tf_input)
@@ -103,7 +107,9 @@ with tabs[0]:
                 st.rerun()
     if st.session_state.floor1:
         ed1 = st.data_editor(pd.DataFrame(st.session_state.floor1), num_rows="dynamic", use_container_width=True, key="ed_f1")
-        if len(ed1) != len(st.session_state.floor1): st.session_state.floor1 = ed1.to_dict("records"); st.rerun()
+        if len(ed1) != len(st.session_state.floor1): 
+            st.session_state.floor1 = ed1.to_dict("records")
+            st.rerun()
 
 # ======================================================
 # TAB 2: REPEATED FLOORS
@@ -121,7 +127,9 @@ with tabs[1]:
         df_rep = pd.DataFrame(st.session_state.repeat)
         df_rep["Report Formula"] = df_rep.apply(lambda x: f"{x['W']} x {x['L']} x {repeat_count} = {int(x['Area']*repeat_count)} Sq Ft", axis=1)
         ed_rep = st.data_editor(df_rep, num_rows="dynamic", use_container_width=True, key="ed_rep")
-        if len(ed_rep) != len(st.session_state.repeat): st.session_state.repeat = ed_rep.to_dict("records"); st.rerun()
+        if len(ed_rep) != len(st.session_state.repeat): 
+            st.session_state.repeat = ed_rep.to_dict("records")
+            st.rerun()
 
 # ======================================================
 # TAB 3: STAIRS
@@ -174,7 +182,9 @@ with tabs[2]:
         if cb2.button("✅ Finish & Close Current Route"): st.session_state.st_current_f=None; st.rerun()
     if st.session_state.stairs:
         ed_s = st.data_editor(pd.DataFrame(st.session_state.stairs), num_rows="dynamic", use_container_width=True, key="ed_st")
-        if len(ed_s) != len(st.session_state.stairs): st.session_state.stairs=ed_s.to_dict("records"); st.rerun()
+        if len(ed_s) != len(st.session_state.stairs): 
+            st.session_state.stairs=ed_s.to_dict("records")
+            st.rerun()
 
 # ======================================================
 # TAB 4: LOGISTICS
